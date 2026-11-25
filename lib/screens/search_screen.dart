@@ -37,7 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
               () => context.read<RecipeProvider>().search(value));
           },
           decoration: InputDecoration(
-            hintText: 'Ex.: pizza, pasta, chicken...',
+            hintText: 'Ex.: pizza, macarrão, frango...',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(icon: const Icon(Icons.close),
               onPressed: () { _controller.clear(); context.read<RecipeProvider>().search(''); }),
@@ -57,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: provider.searchResults.length,
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 260, mainAxisSpacing: 14,
-                      crossAxisSpacing: 14, childAspectRatio: .78),
+                      crossAxisSpacing: 14, childAspectRatio: .70),
                     itemBuilder: (_, index) => RecipeCard(recipe: provider.searchResults[index]),
                   )),
       ]),

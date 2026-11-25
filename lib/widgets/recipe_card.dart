@@ -21,7 +21,7 @@ class RecipeCard extends StatelessWidget {
           children: [
             Stack(children: [
               AspectRatio(
-                aspectRatio: 1.45,
+                aspectRatio: 1.55,
                 child: Image.network(recipe.image, fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
                     color: const Color(0xFFE8EEE8),
@@ -48,7 +48,7 @@ class RecipeCard extends StatelessWidget {
               ),
             ]),
             Padding(
-              padding: const EdgeInsets.fromLTRB(13, 11, 13, 13),
+              padding: const EdgeInsets.fromLTRB(12, 9, 12, 10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(recipe.name, maxLines: 2, overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
@@ -58,7 +58,7 @@ class RecipeCard extends StatelessWidget {
                   Text(' ${recipe.rating.toStringAsFixed(1)}'),
                   const SizedBox(width: 12),
                   const Icon(Icons.schedule, size: 16, color: Colors.black54),
-                  Text(' ${recipe.totalTime} min', style: const TextStyle(color: Colors.black54)),
+                  Text(' ${recipe.totalTime} min', style: const TextStyle(color: Colors.black54, fontSize: 12)),
                 ]),
               ]),
             ),

@@ -29,7 +29,7 @@ class FavoritesScreen extends StatelessWidget {
               itemCount: favorites.length,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 260, mainAxisSpacing: 14,
-                crossAxisSpacing: 14, childAspectRatio: .78),
+                crossAxisSpacing: 14, childAspectRatio: .70),
               itemBuilder: (_, index) => RecipeCard(recipe: favorites[index]),
             )),
       ]),

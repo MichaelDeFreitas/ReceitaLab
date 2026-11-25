@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/recipe.dart';
 import '../services/recipe_service.dart';
+import '../services/translation_service.dart';
 
 class RecipeProvider extends ChangeNotifier {
   final RecipeService _service = RecipeService();
+  final TranslationService _translator = TranslationService();
   List<Recipe> recipes = [];
   List<Recipe> searchResults = [];
   List<String> tags = [];
@@ -27,7 +29,8 @@ class RecipeProvider extends ChangeNotifier {
     errorMessage = null;
     notifyListeners();
     try {
-      recipes = await _service.getRecipes();
+      final fetched = await _service.getRecipes();
+      recipes = await _translateRecipeNames(fetched);
       _remember(recipes);
     } catch (_) {
       errorMessage = 'Não foi possível carregar as receitas. Verifique sua conexão e tente novamente.';
@@ -39,9 +42,10 @@ class RecipeProvider extends ChangeNotifier {
 
   Future<Recipe?> loadRecipe(int id) async {
     try {
-      final recipe = await _service.getRecipe(id);
-      _knownRecipes[id] = recipe;
-      return recipe;
+      final fetched = await _service.getRecipe(id);
+      final translated = await _translateRecipeDetails(fetched);
+      _knownRecipes[id] = translated;
+      return translated;
     } catch (_) {
       return null;
     }
@@ -68,7 +72,9 @@ class RecipeProvider extends ChangeNotifier {
     searchError = null;
     notifyListeners();
     try {
-      searchResults = await _service.searchRecipes(query.trim());
+      final englishQuery = await _translator.toEnglish(query.trim());
+      final fetched = await _service.searchRecipes(englishQuery);
+      searchResults = await _translateRecipeNames(fetched);
       _remember(searchResults);
     } catch (_) {
       searchError = 'Erro ao pesquisar. Tente novamente.';
@@ -85,7 +91,8 @@ class RecipeProvider extends ChangeNotifier {
     errorMessage = null;
     notifyListeners();
     try {
-      recipes = tag == null ? await _service.getRecipes() : await _service.getRecipesByTag(tag);
+      final fetched = tag == null ? await _service.getRecipes() : await _service.getRecipesByTag(tag);
+      recipes = await _translateRecipeNames(fetched);
       _remember(recipes);
     } catch (_) {
       errorMessage = 'Não foi possível carregar essa categoria.';
@@ -106,6 +113,40 @@ class RecipeProvider extends ChangeNotifier {
 
   List<Recipe> get favoriteRecipes =>
       _knownRecipes.values.where((recipe) => favoriteIds.contains(recipe.id)).toList();
+
+  Future<List<Recipe>> _translateRecipeNames(List<Recipe> items) async {
+    final names = await _translator.toPortugueseList(items.map((item) => item.name).toList());
+    return List.generate(items.length, (index) => items[index].copyWith(name: names[index]));
+  }
+
+  Future<Recipe> _translateRecipeDetails(Recipe recipe) async {
+    final allTexts = <String>[
+      recipe.name,
+      recipe.cuisine,
+      ...recipe.ingredients,
+      ...recipe.instructions,
+    ];
+    final translated = await _translator.toPortugueseList(allTexts);
+    var cursor = 0;
+    final name = translated[cursor++];
+    final cuisine = translated[cursor++];
+    final ingredients = translated.sublist(cursor, cursor + recipe.ingredients.length);
+    cursor += recipe.ingredients.length;
+    final instructions = translated.sublist(cursor);
+    final difficulty = switch (recipe.difficulty.toLowerCase()) {
+      'easy' => 'Fácil',
+      'medium' => 'Médio',
+      'hard' => 'Difícil',
+      _ => recipe.difficulty,
+    };
+    return recipe.copyWith(
+      name: name,
+      cuisine: cuisine,
+      ingredients: ingredients,
+      instructions: instructions,
+      difficulty: difficulty,
+    );
+  }
 
   void _remember(List<Recipe> items) {
     for (final recipe in items) {

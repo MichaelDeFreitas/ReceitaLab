@@ -62,7 +62,7 @@ class _CatalogTab extends StatelessWidget {
                     onSelected: (_) => provider.filterByTag(null))),
                 ...provider.tags.take(12).map((tag) => Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(label: Text(tag),
+                  child: ChoiceChip(label: Text(_tagInPortuguese(tag)),
                     selected: provider.selectedTag == tag,
                     onSelected: (_) => provider.filterByTag(tag)),
                 )),
@@ -90,7 +90,7 @@ class _CatalogTab extends StatelessWidget {
             ),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 260, mainAxisSpacing: 14, crossAxisSpacing: 14,
-              childAspectRatio: .78,
+              childAspectRatio: .70,
             ),
           ),
         ),
@@ -113,4 +113,16 @@ class _ErrorView extends StatelessWidget {
       FilledButton(onPressed: onRetry, child: const Text('Tentar novamente')),
     ]),
   ));
+}
+
+
+String _tagInPortuguese(String tag) {
+  const translations = <String, String>{
+    'pizza': 'Pizza', 'pasta': 'Massas', 'dessert': 'Sobremesas',
+    'cookies': 'Biscoitos', 'italian': 'Italiana', 'asian': 'Asiática',
+    'vegetarian': 'Vegetariana', 'chicken': 'Frango', 'beef': 'Carne bovina',
+    'seafood': 'Frutos do mar', 'salad': 'Saladas', 'soup': 'Sopas',
+    'breakfast': 'Café da manhã', 'lunch': 'Almoço', 'dinner': 'Jantar',
+  };
+  return translations[tag.toLowerCase()] ?? tag;
 }

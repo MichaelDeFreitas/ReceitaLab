@@ -10,6 +10,7 @@ Aplicativo Flutter de receitas integrado à API pública [DummyJSON Recipes](htt
 - Filtro por tags/categorias.
 - Favoritos salvos localmente no dispositivo.
 - Estados de carregamento, erro e lista vazia.
+- Tradução automática dos nomes, ingredientes e instruções para português, com cache local.
 
 ## Endpoints utilizados
 
@@ -44,7 +45,7 @@ flutter devices
 flutter run
 ```
 
-É necessária conexão com a internet para consultar a API. Não é necessário token ou chave de API.
+É necessária conexão com a internet para consultar a API e obter traduções automáticas. Não é necessário token ou chave de API. Se o serviço de tradução estiver indisponível, o aplicativo mantém o texto original e continua funcionando.
 
 ## Publicar no GitHub
 

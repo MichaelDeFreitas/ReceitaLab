@@ -33,6 +33,30 @@ class Recipe {
 
   int get totalTime => prepTimeMinutes + cookTimeMinutes;
 
+  Recipe copyWith({
+    String? name,
+    List<String>? ingredients,
+    List<String>? instructions,
+    String? cuisine,
+    String? difficulty,
+    List<String>? tags,
+  }) => Recipe(
+    id: id,
+    name: name ?? this.name,
+    ingredients: ingredients ?? this.ingredients,
+    instructions: instructions ?? this.instructions,
+    prepTimeMinutes: prepTimeMinutes,
+    cookTimeMinutes: cookTimeMinutes,
+    servings: servings,
+    difficulty: difficulty ?? this.difficulty,
+    cuisine: cuisine ?? this.cuisine,
+    image: image,
+    rating: rating,
+    reviewCount: reviewCount,
+    tags: tags ?? this.tags,
+    caloriesPerServing: caloriesPerServing,
+  );
+
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
     id: json['id'] as int? ?? 0,
     name: json['name'] as String? ?? 'Receita sem nome',
